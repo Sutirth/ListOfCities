@@ -35,4 +35,7 @@ public class CityViewModel implements CityContract {
             cityListListener.onFilteredList(filteredCityList);
         }
     }
+
+
+
 }
