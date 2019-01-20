@@ -24,7 +24,9 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityViewHolder
     }
 
     public void addItem(List<City> listCity){
+
         cityList = listCity;
+        notifyDataSetChanged();
     }
 
     public void clearList(){

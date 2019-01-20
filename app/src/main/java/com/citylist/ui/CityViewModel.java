@@ -50,28 +50,26 @@ public class CityViewModel implements CityContract {
         }
     }
 
+    public List<City> filterListQuery(String query) {
 
-    public List<City> filterListQuery(String textQuery){
-        textQuery = textQuery.toLowerCase();
-
-        if(textQuery.length()==0 || textQuery == null){
+        query = query.toLowerCase();
+        if (query.length() == 0) {
             return cityRepo.getCitiesList();
         }
 
-        if(textQuery.length() < indexStack.size()){
-            while (textQuery.length() < indexStack.size()){
+        if (query.length() < indexStack.size()) {
+            while (query.length() < indexStack.size()) {
                 indexStack.pop();
             }
         }
-
-        if (textQuery.length() == 1) {
-            if (dataIndex.containsKey(textQuery.charAt(0))) {
-                indexStack.push(dataIndex.get(textQuery.charAt(0)));
+        if (query.length() == 1) {
+            if (dataIndex.containsKey(query.charAt(0))) {
+                indexStack.push(dataIndex.get(query.charAt(0)));
             } else {
                 return null;
             }
         } else {
-            Index i = findQuery(textQuery);
+            Index i = findQuery(query);
             if (i != null) {
                 indexStack.push(i);
             } else {
@@ -82,68 +80,66 @@ public class CityViewModel implements CityContract {
         if (indexStack.peek().startIndex == indexStack.peek().endIndex) {
             ArrayList<City> list = new ArrayList<City>();
             list.add(cityRepo.getCitiesList().get(indexStack.peek().startIndex));
+
             return list;
         } else {
-            Index index = findQuery(textQuery);
+            Index index = findQuery(query);
+
             return cityRepo.getFilteredCityList(index.startIndex, index.endIndex);
         }
-
     }
 
 
-
-
-    public void createIndexForCityData(ArrayList<City> cityList){
+    public void createIndexForCityData(ArrayList<City> list) {
         dataIndex = new ArrayMap<>();
-        char lastCharacter = cityList.get(0).getName().charAt(0);
-        int tempIndex =0;
+        char lastChar = list.get(0).getName().charAt(0);
+        int tempIndex = 0;
 
-        for(int i =0 ; i < cityList.size() ; i++){
-            if(Character.toLowerCase(cityList.get(i).getName().charAt(0))!= Character.toLowerCase(lastCharacter)){
+        for (int i = 0; i < list.size(); i++) {
+            if (Character.toLowerCase(list.get(i).getName().charAt(0)) != Character.toLowerCase(lastChar)) {
                 Index index = new Index();
                 index.startIndex = tempIndex;
                 index.endIndex = i - 1;
-                dataIndex.put(Character.toLowerCase(lastCharacter), index);
+                dataIndex.put(Character.toLowerCase(lastChar), index);
                 tempIndex = i;
-                lastCharacter = cityList.get(i).getName().charAt(0);
+                lastChar = list.get(i).getName().charAt(0);
             }
         }
 
-
-        if(!dataIndex.containsKey(Character.toLowerCase(lastCharacter))){
+        if (!dataIndex.containsKey(Character.toLowerCase(lastChar))) {
             Index index = new Index();
             index.startIndex = tempIndex;
-            index.endIndex = cityList.size() - 1;
-            dataIndex.put(Character.toLowerCase(lastCharacter), index);
+            index.endIndex = list.size() - 1;
+            dataIndex.put(Character.toLowerCase(lastChar), index);
         }
-
     }
 
-   public Index findQuery(String query){
+
+
+
+    private Index findQuery(String query) {
 
         boolean isFound = false;
         Index index = null;
-        query= query.toLowerCase();
+        query = query.toLowerCase();
 
-        for(int i = indexStack.peek().startIndex; i<= indexStack.peek().endIndex ; i++ ){
-            if(!isFound && cityRepo.getCitiesList().get(i).getCityWithCountry().toLowerCase().startsWith(query)){
+        for (int i = indexStack.peek().startIndex; i <= indexStack.peek().endIndex; i++) {
+
+            if (!isFound && cityRepo.getCitiesList().get(i).getCityWithCountry().toLowerCase().startsWith(query)) {
                 index = new Index();
                 index.startIndex = i;
                 isFound = true;
             }
 
-            if(isFound && cityRepo.getCitiesList().get(i).getCityWithCountry().toLowerCase().startsWith(query)){
-                index.endIndex = i-1;
+            if (isFound && !cityRepo.getCitiesList().get(i).getCityWithCountry().toLowerCase().startsWith(query)) {
+                index.endIndex = i - 1;
                 break;
             }
-
 
             if (index != null && i == (indexStack.peek().endIndex) && index.endIndex == 0) {
                 index.endIndex = i;
             }
-
         }
-
         return index;
     }
 

@@ -74,6 +74,7 @@ public class CityFragment extends Fragment implements  CityContract{
     @Override
     public void onFilteredList(List<City> filteredCityList) {
         if(filteredCityList!=null){
+            Log.i("filtered size: ",""+filteredCityList.size());
             ((CityAdapter) cityRecyclerView.getAdapter()).addItem(filteredCityList);
             cityRecyclerView.scrollToPosition(0);
             cityRecyclerView.setVisibility(View.VISIBLE);
