@@ -52,9 +52,6 @@ public class CityRepo {
         JsonElement element = parser.parse(loadData);
         JsonArray jsonCityArray = element.getAsJsonArray();
 
-        loadData = null;
-        element = null;
-        parser = null;
 
         citiesList =  new ArrayList<>(jsonCityArray.size());
 
@@ -80,6 +77,15 @@ public class CityRepo {
                 return compare;
             }
         });
+    }
+
+
+    public List<City> getFilteredCityList(int startIndex, int endIndex){
+        return citiesList.subList(startIndex, endIndex+1);
+    }
+
+    public List<City> getCitiesList(){
+        return citiesList;
     }
 
 }

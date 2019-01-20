@@ -23,11 +23,8 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityViewHolder
         mListener = listener;
     }
 
-    public void addItem(List<City> listCity, Context context){
-        clearList();
-        cityList.addAll(listCity);
-        notifyDataSetChanged();
-        this.mContext = context;
+    public void addItem(List<City> listCity){
+        cityList = listCity;
     }
 
     public void clearList(){
@@ -44,9 +41,7 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull CityAdapter.CityViewHolder viewHolder, int i) {
-
-            StringBuilder cityDetailsBuilder = new StringBuilder().append(cityList.get(i).getName()).append(", ").append(cityList.get(i).getCountry());
-            viewHolder.txtCityDetails.setText(cityDetailsBuilder.toString());
+            viewHolder.txtCityDetails.setText(cityList.get(i).getCityWithCountry());
     }
 
     @Override

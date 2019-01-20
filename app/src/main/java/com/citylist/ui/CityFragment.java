@@ -73,7 +73,13 @@ public class CityFragment extends Fragment implements  CityContract{
 
     @Override
     public void onFilteredList(List<City> filteredCityList) {
-
+        if(filteredCityList!=null){
+            ((CityAdapter) cityRecyclerView.getAdapter()).addItem(filteredCityList);
+            cityRecyclerView.scrollToPosition(0);
+            cityRecyclerView.setVisibility(View.VISIBLE);
+        }else{
+            cityRecyclerView.setVisibility(View.GONE);
+        }
     }
 
     public interface OnCityClickListener {
@@ -97,7 +103,7 @@ public class CityFragment extends Fragment implements  CityContract{
                 @Override
                 public boolean onQueryTextChange(String newText) {
                     Log.i("onQueryTextChange", newText);
-
+                    cityViewModel.filterCityList(newText);
                     return true;
                 }
                 @Override
