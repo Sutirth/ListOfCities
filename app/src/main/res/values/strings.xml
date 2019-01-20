@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">CityList</string>
+    <string name="city_not_found">No data set for the query entered.</string>
+    <string name="fetching_data">Fetching data from the file. Please hang on for few minutes.</string>
 </resources>

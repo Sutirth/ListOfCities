@@ -13,6 +13,8 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.*;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import com.citylist.R;
 import model_data.City;
 
@@ -26,7 +28,10 @@ public class CityFragment extends Fragment implements  CityContract{
     private OnCityClickListener mListener;
     private SearchView searchView = null;
     private SearchView.OnQueryTextListener queryTextListener;
-    private Toolbar toolbar;
+    private TextView txtErrorDisplay;
+    private TextView txtFetchingData;
+    private ProgressBar progressBar;
+
     public CityFragment(){
 
     }
@@ -34,7 +39,6 @@ public class CityFragment extends Fragment implements  CityContract{
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        View view = getView();
         setHasOptionsMenu(true);
 
     }
@@ -58,15 +62,23 @@ public class CityFragment extends Fragment implements  CityContract{
         super.onActivityCreated(savedInstanceState);
         View view = getView();
         cityRecyclerView = view.findViewById(R.id.cityRecyclerView);
+        txtErrorDisplay = view.findViewById(R.id.txtErrorDisplay);
+        txtFetchingData = view.findViewById(R.id.txtFetchingData);
+        progressBar = view.findViewById(R.id.progressBar);
+
 
         cityViewModel = new CityViewModel(this.getContext());
         cityViewModel.setCityListListener(this);
+        progressBar.setVisibility(View.VISIBLE);
+        txtFetchingData.setVisibility(View.VISIBLE);
         cityViewModel.initializeList();
 
     }
 
     @Override
     public void onInitializedList(List<City> cityList) {
+        progressBar.setVisibility(View.GONE);
+        txtFetchingData.setVisibility(View.GONE);
         cityRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         cityRecyclerView.setAdapter(new CityAdapter(cityList, mListener));
     }
@@ -78,8 +90,11 @@ public class CityFragment extends Fragment implements  CityContract{
             ((CityAdapter) cityRecyclerView.getAdapter()).addItem(filteredCityList);
             cityRecyclerView.scrollToPosition(0);
             cityRecyclerView.setVisibility(View.VISIBLE);
+            txtErrorDisplay.setVisibility(View.GONE);
         }else{
             cityRecyclerView.setVisibility(View.GONE);
+            txtErrorDisplay.setVisibility(View.VISIBLE);
+
         }
     }
 
